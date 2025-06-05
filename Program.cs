@@ -23,13 +23,56 @@ while (true)
 ╚══════════════════════════════════════════════════════════════╝
 ");
     Console.WriteLine("Bem-vindo ao sistema de reservas de hospedagem!");
-    Console.WriteLine("1 - Realizar reserva");
-    Console.WriteLine("2 - Exibir informações da reserva");
-    Console.WriteLine("3 - Sair");
+    Console.WriteLine("1 - Cadastrar Suites");
+    Console.WriteLine("2 - Exibir Suites");
+    Console.WriteLine("3 - Realizar reserva");
+    Console.WriteLine("4 - Exibir informações da reserva");
+    Console.WriteLine("5 - Sair");
     Console.Write("Escolha uma opção: ");
     string opcao = Console.ReadLine();
 
     if (opcao == "1")
+    {
+        Console.WriteLine("\n--- CADASTRO DE SUÍTES ---");
+        Console.Write("Digite o tipo da suíte: ");
+        String TipoSuite = Console.ReadLine();
+        Console.Write("Digite a capacidade da suíte: ");
+        int CapacidadeSuite;
+        while (!int.TryParse(Console.ReadLine(), out CapacidadeSuite) || CapacidadeSuite <= 0)
+        {
+            Console.WriteLine("Capacidade inválida. Digite um número maior que zero.");
+            Console.Write("Digite a capacidade da suíte: ");
+        }
+        Console.Write("Digite o valor da diária: ");
+        decimal ValorDiaria;
+        while (!decimal.TryParse(Console.ReadLine(), out ValorDiaria) || ValorDiaria <= 0)
+        {
+            Console.WriteLine("Valor inválido. Digite um número maior que zero.");
+            Console.Write("Digite o valor da diária: ");
+        }
+
+        suites.Add(new Suite(TipoSuite, CapacidadeSuite, ValorDiaria));
+        Console.WriteLine("Suíte cadastrada com sucesso!");
+        Console.WriteLine("Pressione qualquer tecla para voltar ao menu.");
+        Console.ReadKey();
+    }
+    else if (opcao == "2")
+    {
+        Console.WriteLine("\n--- LISTA DE SUÍTES ---");
+        if (suites.Count == 0)
+        {
+            Console.WriteLine("Nenhuma suíte cadastrada.");
+        }
+        else
+        {
+            foreach (var suite in suites)
+            {
+                Console.WriteLine($"Tipo: {suite.TipoSuite}, Capacidade: {suite.Capacidade}, Valor diária: {suite.ValorDiaria.ToString("C")}");
+            }
+        }
+        Console.ReadKey();
+    }
+    else if (opcao == "3")
     {
         // Cadastro de hóspedes
         Console.Write("Quantos hóspedes deseja cadastrar? ");
@@ -134,7 +177,7 @@ while (true)
         Console.WriteLine("Pressione qualquer tecla para voltar ao menu.");
         Console.ReadKey();
     }
-    else if (opcao == "2")
+    else if (opcao == "4")
     {
         if (reserva == null)
         {
@@ -159,7 +202,7 @@ while (true)
         Console.WriteLine("Pressione qualquer tecla para voltar ao menu.");
         Console.ReadKey();
     }
-    else if (opcao == "3")
+    else if (opcao == "5")
     {
         Console.WriteLine("Saindo...");
         break;
