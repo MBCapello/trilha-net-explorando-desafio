@@ -1,21 +1,86 @@
-# DIO - Trilha .NET - Explorando a linguagem C#
-www.dio.me
+# 🏨 RESERVA FÁCIL - Sistema de Reservas de Hotel DIO 🗝️
 
-## Desafio de projeto
-Para este desafio, você precisará usar seus conhecimentos adquiridos no módulo de explorando a linguagem C#, da trilha .NET da DIO.
+```
+██████╗ ███████╗███████╗██████╗ ███████╗ █████╗     ███████╗ █████╗  ██████╗██╗██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝██╔══██╗    ██╔════╝██╔══██╗██╔════╝██║██║
+██████╔╝█████╗  █████╗  ██████╔╝█████╗  ███████║    █████╗  ███████║██║     ██║██║
+██╔══██╗██╔══╝  ██╔══╝  ██╔══██╗██╔══╝  ██╔══██║    ██╔══╝  ██╔══██║██║     ╚═╝╚═╝
+██║  ██║███████╗███████╗██║  ██║███████╗██║  ██║    ██║     ██║  ██║╚██████╗██╗██╗
+╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝╚═╝╚═╝
+```
 
-## Contexto
-Você foi contratado para construir um sistema de hospedagem, que será usado para realizar uma reserva em um hotel. Você precisará usar a classe Pessoa, que representa o hóspede, a classe Suíte, e a classe Reserva, que fará um relacionamento entre ambos.
+Sistema de reservas de hotel desenvolvido como desafio da DIO, com interface de console interativa, validações e visual retrô!
 
-O seu programa deverá cálcular corretamente os valores dos métodos da classe Reserva, que precisará trazer a quantidade de hóspedes e o valor da diária, concedendo um desconto de 10% para caso a reserva seja para um período maior que 10 dias.
+## ✨ Funcionalidades
 
-## Regras e validações
-1. Não deve ser possível realizar uma reserva de uma suíte com capacidade menor do que a quantidade de hóspedes. Exemplo: Se é uma suíte capaz de hospedar 2 pessoas, então ao passar 3 hóspedes deverá retornar uma exception.
-2. O método ObterQuantidadeHospedes da classe Reserva deverá retornar a quantidade total de hóspedes, enquanto que o método CalcularValorDiaria deverá retornar o valor da diária (Dias reservados x valor da diária).
-3. Caso seja feita uma reserva igual ou maior que 10 dias, deverá ser concedido um desconto de 10% no valor da diária.
+- Cadastro de hóspedes durante a reserva
+- Seleção automática de suítes compatíveis
+- Validação de datas, nomes e capacidade
+- Cálculo automático do valor total (com desconto para estadias longas)
+- Exibição de resumo e detalhes da reserva
+- Interface com ASCII art e emojis para uma experiência divertida
 
+## 🚀 Como executar
 
-![Diagrama de classe estacionamento](diagrama_classe_hotel.png)
+1. Clone o repositório
+2. Abra a pasta `trilha-net-explorando-desafio` no VS Code ou terminal
+3. Execute:
+   ```bash
+   dotnet run
+   ```
 
-## Solução
-O código está pela metade, e você deverá dar continuidade obedecendo as regras descritas acima, para que no final, tenhamos um programa funcional. Procure pela palavra comentada "TODO" no código, em seguida, implemente conforme as regras acima.
+## 📝 Exemplo de uso
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║   🏨 RESERVA FÁCIL - Sistema de Reservas de Hotel DIO 🗝️   ║
+╚══════════════════════════════════════════════════════════════╝
+Bem-vindo ao sistema de reservas de hospedagem!
+1 - Realizar reserva
+2 - Exibir informações da reserva
+3 - Sair
+Escolha uma opção: 1
+Quantos hóspedes deseja cadastrar? 2
+Digite o nome completo do hóspede 1 (nome e sobrenome): Maria Silva
+Digite o nome completo do hóspede 2 (nome e sobrenome): João Souza
+Suítes disponíveis:
+1 - Standard (Capacidade: 2, Valor diária: R$ 100,00)
+2 - Premium (Capacidade: 4, Valor diária: R$ 180,00)
+3 - Master (Capacidade: 6, Valor diária: R$ 250,00)
+Escolha o número da suíte desejada: 1
+Quantos dias de estadia? 5
+Data de entrada (formato dd/MM/yyyy, não pode ser hoje): 10/06/2025
+
+--- RESUMO DA RESERVA ---
+Data de entrada: 10/06/2025
+Dias reservados: 5
+Suíte: Standard (Capacidade: 2)
+Valor diária: R$ 100,00
+Hóspedes:
+- MARIA SILVA
+- JOÃO SOUZA
+Valor total: R$ 500,00
+-------------------------
+```
+
+## 📚 Regras de negócio
+
+- Não é possível reservar uma suíte para mais hóspedes do que sua capacidade
+- O valor total é calculado multiplicando os dias pelo valor da diária
+- Reservas de 10 dias ou mais recebem 10% de desconto
+- Não é permitido reservar para o dia atual ou datas passadas
+
+## 🏆 Aprendizados
+
+- Manipulação de listas e objetos em C#
+- Validação de entrada do usuário
+- Uso de propriedades, construtores e métodos
+- Interface de console com ASCII art
+
+## 📢 Créditos
+
+Desafio proposto pela [DIO](https://www.dio.me/) na Trilha .NET
+
+---
+
+> "A melhor forma de aprender é praticando!"

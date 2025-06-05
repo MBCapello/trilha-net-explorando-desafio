@@ -1,25 +1,172 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using DesafioProjetoHospedagem.Models;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-// Cria os modelos de hóspedes e cadastra na lista de hóspedes
-List<Pessoa> hospedes = new List<Pessoa>();
+List<Suite> suites = new List<Suite>
+{
+    new Suite("Standard", 2, 100),
+    new Suite("Premium", 4, 180),
+    new Suite("Master", 6, 250)
+};
 
-Pessoa p1 = new Pessoa(nome: "Hóspede 1");
-Pessoa p2 = new Pessoa(nome: "Hóspede 2");
+Reserva reserva = null;
+DateTime dataEntrada = DateTime.MinValue;
 
-hospedes.Add(p1);
-hospedes.Add(p2);
+while (true)
+{
+    Console.Clear();
+    Console.WriteLine(@" 
+╔══════════════════════════════════════════════════════════════╗
+║   🏨 RESERVA FÁCIL - Sistema de Reservas de Hotel DIO 🗝️   ║
+╚══════════════════════════════════════════════════════════════╝
+");
+    Console.WriteLine("Bem-vindo ao sistema de reservas de hospedagem!");
+    Console.WriteLine("1 - Realizar reserva");
+    Console.WriteLine("2 - Exibir informações da reserva");
+    Console.WriteLine("3 - Sair");
+    Console.Write("Escolha uma opção: ");
+    string opcao = Console.ReadLine();
 
-// Cria a suíte
-Suite suite = new Suite(tipoSuite: "Premium", capacidade: 2, valorDiaria: 30);
+    if (opcao == "1")
+    {
+        // Cadastro de hóspedes
+        Console.Write("Quantos hóspedes deseja cadastrar? ");
+        if (!int.TryParse(Console.ReadLine(), out int qtdHospedes) || qtdHospedes <= 0)
+        {
+            Console.WriteLine("Quantidade inválida. Pressione qualquer tecla para voltar ao menu.");
+            Console.ReadKey();
+            continue;
+        }
 
-// Cria uma nova reserva, passando a suíte e os hóspedes
-Reserva reserva = new Reserva(diasReservados: 5);
-reserva.CadastrarSuite(suite);
-reserva.CadastrarHospedes(hospedes);
+        List<Pessoa> hospedes = new List<Pessoa>();
+        for (int i = 1; i <= qtdHospedes; i++)
+        {
+            while (true)
+            {
+                Console.Write($"Digite o nome completo do hóspede {i} (nome e sobrenome): ");
+                string nomeCompleto = Console.ReadLine()?.Trim();
+                if (string.IsNullOrWhiteSpace(nomeCompleto)) continue;
 
-// Exibe a quantidade de hóspedes e o valor da diária
-Console.WriteLine($"Hóspedes: {reserva.ObterQuantidadeHospedes()}");
-Console.WriteLine($"Valor diária: {reserva.CalcularValorDiaria()}");
+                var partes = nomeCompleto.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (partes.Length < 2)
+                {
+                    Console.WriteLine("Por favor, informe nome e sobrenome.");
+                    continue;
+                }
+                try
+                {
+                    hospedes.Add(new Pessoa(partes[0], partes[1]));
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"Erro: {ex.Message}");
+                }
+            }
+        }
+
+        // Seleção de suíte compatível
+        var suitesDisponiveis = suites.Where(s => s.Capacidade >= qtdHospedes).ToList();
+        if (suitesDisponiveis.Count == 0)
+        {
+            Console.WriteLine("Não há suítes disponíveis para essa quantidade de hóspedes.");
+            Console.ReadKey();
+            continue;
+        }
+
+        Console.WriteLine("\nSuítes disponíveis:");
+        for (int i = 0; i < suitesDisponiveis.Count; i++)
+        {
+            var s = suitesDisponiveis[i];
+            Console.WriteLine($"{i + 1} - {s.TipoSuite} (Capacidade: {s.Capacidade}, Valor diária: {s.ValorDiaria.ToString("C")})");
+        }
+        int escolhaSuite;
+        while (true)
+        {
+            Console.Write("Escolha o número da suíte desejada: ");
+            if (int.TryParse(Console.ReadLine(), out escolhaSuite) &&
+                escolhaSuite > 0 && escolhaSuite <= suitesDisponiveis.Count)
+                break;
+            Console.WriteLine("Opção inválida.");
+        }
+        Suite suiteEscolhida = suitesDisponiveis[escolhaSuite - 1];
+
+        // Dias de estadia
+        int diasReservados;
+        while (true)
+        {
+            Console.Write("Quantos dias de estadia? ");
+            if (int.TryParse(Console.ReadLine(), out diasReservados) && diasReservados > 0)
+                break;
+            Console.WriteLine("Número de dias inválido.");
+        }
+
+        // Data de entrada (não pode ser hoje)
+        while (true)
+        {
+            Console.Write("Data de entrada (formato dd/MM/yyyy, não pode ser hoje): ");
+            if (DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataEntrada)
+                && dataEntrada.Date > DateTime.Now.Date)
+                break;
+            Console.WriteLine("Data inválida. A reserva não pode ser para hoje ou para o passado.");
+        }
+
+        // Criação da reserva
+        reserva = new Reserva(diasReservados)
+        {
+            Suite = suiteEscolhida,
+            Hospedes = hospedes
+        };
+
+        // Resumo
+        Console.WriteLine("\n--- RESUMO DA RESERVA ---");
+        Console.WriteLine($"Data de entrada: {dataEntrada:dd/MM/yyyy}");
+        Console.WriteLine($"Dias reservados: {diasReservados}");
+        Console.WriteLine($"Suíte: {suiteEscolhida.TipoSuite} (Capacidade: {suiteEscolhida.Capacidade})");
+        Console.WriteLine($"Valor diária: {suiteEscolhida.ValorDiaria.ToString("C")}");
+        Console.WriteLine($"Hóspedes:");
+        foreach (var h in hospedes)
+            Console.WriteLine($"- {h.NomeCompleto}");
+        Console.WriteLine($"Valor total: {reserva.CalcularValorDiaria().ToString("C")}");
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Pressione qualquer tecla para voltar ao menu.");
+        Console.ReadKey();
+    }
+    else if (opcao == "2")
+    {
+        if (reserva == null)
+        {
+            Console.WriteLine("Nenhuma reserva realizada ainda.");
+        }
+        else
+        {
+            Console.WriteLine("\n--- INFORMAÇÕES DA RESERVA ---");
+            Console.WriteLine("==============================");
+            Console.WriteLine($"Data de entrada: {dataEntrada:dd/MM/yyyy}");
+            Console.WriteLine($"Suíte: {reserva.Suite.TipoSuite}");
+            Console.WriteLine($"Capacidade: {reserva.Suite.Capacidade}");
+            Console.WriteLine($"Valor diária: {reserva.Suite.ValorDiaria.ToString("C")}");
+            Console.WriteLine($"Dias reservados: {reserva.DiasReservados}");
+            Console.WriteLine($"Quantidade de hóspedes: {reserva.ObterQuantidadeHospedes()}");
+            Console.WriteLine("Hóspedes:");
+            foreach (var h in reserva.Hospedes)
+                Console.WriteLine($"- {h.NomeCompleto}");
+            Console.WriteLine($"Valor total: {reserva.CalcularValorDiaria().ToString("C")}");
+            Console.WriteLine("==============================");
+        }
+        Console.WriteLine("Pressione qualquer tecla para voltar ao menu.");
+        Console.ReadKey();
+    }
+    else if (opcao == "3")
+    {
+        Console.WriteLine("Saindo...");
+        break;
+    }
+    else
+    {
+        Console.WriteLine("Opção inválida. Pressione qualquer tecla para tentar novamente.");
+        Console.ReadKey();
+    }
+}
